@@ -10,4 +10,4 @@
         dest: /opt/deploy.sh
         
     - name: Run Shell Script
-      command: bash /opt/deploy.sh
+      command: "bash /opt/deploy.sh {{ build_number }}"
