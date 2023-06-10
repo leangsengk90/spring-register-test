@@ -45,7 +45,7 @@ pipeline{
   
   post{
         always {
-            sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@test.md'
+            sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@testing.md'
         }
     }
   
