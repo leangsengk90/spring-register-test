@@ -14,15 +14,15 @@ pipeline{
         
         stage("Buid and Tag Image"){
           steps{
-            sh "docker build -t xeng/kube-register:1.1.1 ."
+            sh "docker build -t registry.e-crops.co/register-app:${BUILD_NUMBER} ."
           }
         }
         
         stage("Push Image"){
           steps{
-            withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+            withCredentials([usernamePassword(credentialsId: 'nexus-id', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
               sh "docker login -u $USERNAME -p $PASSWORD"
-              sh "docker push xeng/kube-register:1.1.1"
+              sh "docker push registry.e-crops.co/register-app:${BUILD_NUMBER}"
             }
           }
         }
