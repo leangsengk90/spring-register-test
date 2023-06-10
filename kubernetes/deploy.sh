@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: register-cont
-          image: xeng/kube-register:1.1.1
+          image: registry.e-crops.co/register-app:$1
           ports:
             - containerPort: 8080
 
