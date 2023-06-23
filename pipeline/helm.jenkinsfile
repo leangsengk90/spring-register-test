@@ -39,7 +39,7 @@ pipeline{
                 git pull origin master
                 sed -i 's+name:.*+name: register-app-prod+g' helm-chart/register-app/Chart.yaml
                 sed -i 's+version:.*+version: 0.0.2+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+xeng/register-api:.*+xeng/register-api:${BUILD_NUMBER}+g' helm-chart/register-app/values-prod.yaml
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-prod.yaml
                 helm package helm-chart/register-app -d kubernetes
               """
           }
