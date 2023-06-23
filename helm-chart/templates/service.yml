@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
+  name: {{ .Values.registerApi.name }}-service
 spec:
   selector:
-    app: nginx
+    app: {{ .Values.registerApi.name }}
   ports:
     - protocol: TCP
       port: 80
