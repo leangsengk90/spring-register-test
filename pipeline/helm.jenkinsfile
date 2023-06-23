@@ -6,7 +6,7 @@ pipeline{
   stages{
     stage("Build"){
       stages{
-        /*
+        
         stage("Package Project"){
           steps{
             sh "mvn clean package"
@@ -31,12 +31,16 @@ pipeline{
           }
         }
 
-        */
+      
 
         stage("Package Helm Chart"){
           steps{
               sh """
-                helm package helm-chart -d kubernetes
+                git pull origin master
+                sed -i 's+name:.*+name: register-app-prod+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version:0.0.2+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+xeng/register-api:.*+xeng/register-api:${BUILD_NUMBER}+g' helm-chart/register-app/values-prod.yaml
+                helm package helm-chart/register-app -d kubernetes
               """
           }
         }
