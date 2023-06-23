@@ -6,8 +6,8 @@
   tasks:
     - name: Copy file
       copy:
-        src: "{{ workspace }}/kubernetes/helm-chart.sh"
-        dest: /opt/helm-chart.sh
+        src: "{{ workspace }}/kubernetes"
+        dest: /opt/kubernetes
         
     - name: Run Shell Script
-      command: "bash /opt/helm-chart.sh"
+      command: "bash /opt/kubernetes/helm-chart.sh"
