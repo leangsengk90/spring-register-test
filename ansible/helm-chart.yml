@@ -15,3 +15,5 @@
         state: present
         name: my-nginx
         namespace: default
+        values:
+          replicas: 5
