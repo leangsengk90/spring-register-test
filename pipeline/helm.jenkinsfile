@@ -6,6 +6,7 @@ pipeline{
   stages{
     stage("Build"){
       stages{
+        /*
         stage("Package Project"){
           steps{
             sh "mvn clean package"
@@ -26,6 +27,16 @@ pipeline{
             }
           }
         }
+
+        */
+
+        stage("Package Helm Chart"){
+          steps{
+              sh """
+                helm package helm-chart
+              """
+          }
+        }
         
         stage("Deploy Service"){
           steps{
@@ -40,12 +51,12 @@ pipeline{
       }
     }
   }
-  
+  /*
   post{
         always {
             sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@testing.md'
         }
     }
-  
+  */
   
 }
