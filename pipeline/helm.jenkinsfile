@@ -33,7 +33,7 @@ pipeline{
         stage("Package Helm Chart"){
           steps{
               sh """
-                helm package helm-chart
+                helm package helm-chart -d kubernetes
               """
           }
         }
