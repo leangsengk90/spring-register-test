@@ -43,6 +43,7 @@ pipeline{
               sh """
                 ansible-playbook ansible/helm-chart.yml \
                 -i ansible/inventory
+                -e workspace=$WORKSPACE
               """
           }
         }
