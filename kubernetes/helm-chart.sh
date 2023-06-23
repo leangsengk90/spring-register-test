@@ -1,3 +1,4 @@
 #!/bin/bash
 
-helm upgrade register-app-prod /opt/kubernetes/register-app-prod-0.0.2.tgz --install
+tar -xvf register-app-prod-0.0.2.tgz
+helm upgrade register-app-prod /opt/kubernetes/register-app-prod --values=/opt/kubernetes/register-app-prod/values-prod.yaml --install
