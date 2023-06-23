@@ -1,0 +1,53 @@
+pipeline{
+  agent { label 'master'}
+  tools {
+    maven "3.6.3"
+  }
+  stages{
+    stage("Build"){
+      stages{
+        stage("Package Project"){
+          steps{
+            sh "mvn clean package"
+          }
+        }
+        
+        stage("Buid and Tag Image"){
+          steps{
+            sh "docker build -t registry.e-crops.co/register-app:${BUILD_NUMBER} ."
+          }
+        }
+        
+        stage("Push Image"){
+          steps{
+            withCredentials([usernamePassword(credentialsId: 'nexus-id', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+              sh "docker login -u $USERNAME -p $PASSWORD registry.e-crops.co"
+              sh "docker push registry.e-crops.co/register-app:${BUILD_NUMBER}"
+            }
+          }
+        }
+        
+        stage("Deploy Service"){
+          steps{
+              sh """
+                ansible-playbook ansible/helm-chart.yml \
+                -i ansible/inventory \
+                -e workspace=$WORKSPACE \
+                -e build_number=$BUILD_NUMBER
+              """
+          }
+        }
+        
+        
+      }
+    }
+  }
+  
+  post{
+        always {
+            sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@testing.md'
+        }
+    }
+  
+  
+}
