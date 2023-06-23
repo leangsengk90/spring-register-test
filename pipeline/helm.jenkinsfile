@@ -15,15 +15,18 @@ pipeline{
         
         stage("Buid and Tag Image"){
           steps{
-            sh "docker build -t registry.e-crops.co/register-app:${BUILD_NUMBER} ."
+            //sh "docker build -t registry.e-crops.co/register-app:${BUILD_NUMBER} ."
+            sh "docker build -t xeng/register-app:${BUILD_NUMBER} ."
           }
         }
         
         stage("Push Image"){
           steps{
-            withCredentials([usernamePassword(credentialsId: 'nexus-id', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-              sh "docker login -u $USERNAME -p $PASSWORD registry.e-crops.co"
-              sh "docker push registry.e-crops.co/register-app:${BUILD_NUMBER}"
+            withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+              //sh "docker login -u $USERNAME -p $PASSWORD registry.e-crops.co"
+              //sh "docker push registry.e-crops.co/register-app:${BUILD_NUMBER}"
+                sh "docker login -u $USERNAME -p $PASSWORD"
+                sh "docker push xeng/register-app:${BUILD_NUMBER}"
             }
           }
         }
