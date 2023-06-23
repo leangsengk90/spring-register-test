@@ -31,9 +31,7 @@ pipeline{
           steps{
               sh """
                 ansible-playbook ansible/helm-chart.yml \
-                -i ansible/inventory \
-                -e workspace=$WORKSPACE \
-                -e build_number=$BUILD_NUMBER
+                -i ansible/inventory
               """
           }
         }
