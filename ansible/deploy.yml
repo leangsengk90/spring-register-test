@@ -4,6 +4,11 @@
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   tasks:
+    - name: Creates directory
+      file:
+        path: /opt/kubernetes
+        state: directory
+        recurse: yes
     - name: Copy file
       copy:
         src: "{{ workspace }}/kubernetes"
