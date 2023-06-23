@@ -1,0 +1,17 @@
+- name: Deploy helm Chart Playbook
+  hosts: node1
+  become: true
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  tasks:
+    - name: Install helm chart from a git repo specifying path
+      helm:
+        host: localhost
+        chart:
+          source:
+            type: git
+            location: https://github.com/leangsengk90/spring-register-test.git
+            path: helm-chart
+        state: present
+        name: my-nginx
+        namespace: default
