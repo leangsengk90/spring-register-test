@@ -34,43 +34,20 @@ pipeline{
           }
         }
 
-        /*
+      
         stage("Trigger Package helm"){
           steps{
-              build wait: false, job: './package-helm', parameters: [string(name: 'APP_ENV1', value: "${APP_ENV}"), 
+
+              build wait: false, job: './helm-package-pipeline', parameters: [string(name: 'APP_ENV1', value: "${APP_ENV}"), 
                   string(name: 'HELM_VERSION1', value: "${HELM_VERSION}"),
                   string(name: 'BUILD_NUMBER', value: "${BUILD_NUMBER}")]
-          }
-        }
-        */
-        
-        
-        stage("Package Helm Chart"){
-          steps{
-              sh """
-                git pull origin staging
-                
-                sed -i 's+name:.*+name: register-app-${APP_ENV}+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+version:.*+version: ${HELM_VERSION}+g' helm-chart/register-app/Chart.yaml
 
-                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-${APP_ENV}.yaml
-
-                helm package helm-chart/register-app -d kubernetes
-              """
           }
         }
+      
         
-        stage("Deploy Service"){
-          steps{
-              sh """
-                ansible-playbook ansible/deploy.yml \
-                -i ansible/inventory \
-                -e workspace=$WORKSPACE \
-                -e app_env=${APP_ENV} \
-                -e helm_version=${HELM_VERSION}
-              """
-          }
-        }
+        
+    
       
   }
 }
