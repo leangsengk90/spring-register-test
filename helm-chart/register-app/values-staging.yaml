@@ -1,0 +1,6 @@
+registerApi:
+  name: register-api
+  replicas: 2
+  image: xeng/register-api
+  tag: 0
+  env: staging
