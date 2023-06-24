@@ -8,6 +8,7 @@ pipeline{
   parameters{
     choice(name: 'APP_ENV', choices: ["uat", "prod", "staging"])
     string(name: 'HELM_VERSION', defaultValue: "x.x.x")
+    choice(name: 'BRANCH', choices: ["staging", "prod", "dev"])
   }
 
   stages{
