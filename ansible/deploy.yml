@@ -7,4 +7,8 @@
     - name: Run Shell Script
       shell: |
         helm repo add register-app-{{ app_env }} https://nexus-ui.e-crops.co/repository/helm-repo/ --username dara --password 123
+        helm repo update
+        helm fetch register-app-{{ app_env }}/register-app-{{ app_env }}
+        tar -xvf register-app-{{ app_env }}-{{ helm_version }}.tgz
+        helm upgrade --install register-app-{{ app_env }} register-app-{{ app_env }}/register-app-{{ app_env }} --values=register-app-{{ app_env }}/values-{{ app_env }}.yaml
         
