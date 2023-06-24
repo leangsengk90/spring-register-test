@@ -3,3 +3,4 @@ registerApi:
   replicas: 5
   image: xeng/register-api
   tag: 0
+  env: dev
