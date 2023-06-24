@@ -6,7 +6,7 @@ pipeline{
     string(name: 'HELM_VERSION1', defaultValue: "x.x.x")
   }
 
-  environments{
+  environment{
     APP_ENV2 = "${params.APP_ENV} ?: ${APP_ENV1}"
     HELM_VERSION2 = "${params.HELM_VERSION} ?: ${HELM_VERSION1}"
   }
