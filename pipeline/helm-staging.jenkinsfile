@@ -1,0 +1,83 @@
+pipeline{
+  agent { label 'master'}
+  tools {
+    maven "3.6.3"
+  }
+
+  parameters{
+    choice(name: 'APP_ENV', choices: ["uat", "prod"])
+    string(name: 'HELM_VERSION', defaultValue: "x.x.x")
+  }
+
+  stages{
+    stage("Build"){
+      stages{
+        
+        stage("Package Project"){
+          steps{
+            sh "mvn clean package"
+          }
+        }
+        
+        stage("Buid and Tag Image"){
+          steps{
+            //sh "docker build -t registry.e-crops.co/register-api:${BUILD_NUMBER} ."
+            sh "docker build -t xeng/register-api:${BUILD_NUMBER} ."
+          }
+        }
+        
+        stage("Push Image"){
+          steps{
+            withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+              //sh "docker login -u $USERNAME -p $PASSWORD registry.e-crops.co"
+              //sh "docker push registry.e-crops.co/register-api:${BUILD_NUMBER}"
+                sh "docker login -u $USERNAME -p $PASSWORD"
+                sh "docker push xeng/register-api:${BUILD_NUMBER}"
+            }
+          }
+        }
+
+        stage("Trigger Package helm"){
+          steps{
+              build wait: false, job: './package-helm', parameters: [string(name: 'APP_ENV1', value: "${APP_ENV}"), 
+                  string(name: 'HELM_VERSION1', value: "${HELM_VERSION}"),
+                  string(name: 'BUILD_NUMBER', value: "${BUILD_NUMBER}")]
+          }
+        }
+        
+        /*
+        stage("Package Helm Chart"){
+          steps{
+              sh """
+                git pull origin master
+                sed -i 's+name:.*+name: register-app-prod+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version: 0.0.2+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-prod.yaml
+                helm package helm-chart/register-app -d kubernetes
+              """
+          }
+        }
+        
+        stage("Deploy Service"){
+          steps{
+              sh """
+                ansible-playbook ansible/deploy.yml \
+                -i ansible/inventory \
+                -e workspace=$WORKSPACE
+              """
+          }
+        }
+        */
+        
+      }
+    }
+  }
+  /*
+  post{
+        always {
+            sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@testing.md'
+        }
+    }
+  */
+  
+}
