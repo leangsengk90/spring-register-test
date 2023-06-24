@@ -3,7 +3,9 @@
   become: true
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  tasks
+  tasks:
     - name: Run Shell Script
-      shell: echo "hello"
-       
+      shell: |
+        helm repo add register-app-{{ app_env }} https://nexus-ui.e-crops.co/repository/helm-repo/ --username dara --password 123
+        helm repo update
+        helm upgrade --install register-app-{{ app_env }} register-app-{{ app_env }}/register-app
