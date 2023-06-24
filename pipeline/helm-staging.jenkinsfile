@@ -6,7 +6,7 @@ pipeline{
   }
 
   parameters{
-    choice(name: 'APP_ENV', choices: ["uat", "prod"])
+    choice(name: 'APP_ENV', choices: ["uat", "prod", "staging"])
     string(name: 'HELM_VERSION', defaultValue: "x.x.x")
   }
 
@@ -49,10 +49,10 @@ pipeline{
               sh """
                 git pull origin staging
                 
-                sed -i 's+name:.*+name: register-app-staging+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+version:.*+version: 0.0.100+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+name:.*+name: register-app-${APP_ENV}+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version: ${HELM_VERSION}+g' helm-chart/register-app/Chart.yaml
 
-                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-staging.yaml
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-${APP_ENV}.yaml
 
                 helm package helm-chart/register-app -d kubernetes
               """
