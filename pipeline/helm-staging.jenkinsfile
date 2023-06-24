@@ -65,7 +65,9 @@ pipeline{
               sh """
                 ansible-playbook ansible/deploy.yml \
                 -i ansible/inventory \
-                -e workspace=$WORKSPACE
+                -e workspace=$WORKSPACE \
+                -e app_env=${APP_ENV} \
+                -e helm_version=${HELM_VERSION}
               """
           }
         }
