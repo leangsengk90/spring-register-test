@@ -17,4 +17,4 @@ spec:
         - name: {{ .Values.registerApi.name }}-cont
           image: {{ .Values.registerApi.image }}:{{ .Values.registerApi.tag }}
           ports:
-            - containerPort: 80
+            - containerPort: 8080
