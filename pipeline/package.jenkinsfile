@@ -10,7 +10,7 @@ pipeline{
   environment{
     APP_ENV2 = "${params.APP_ENV ?: APP_ENV1}"
     HELM_VERSION2 = "${params.HELM_VERSION ?: HELM_VERSION1}"
-    BUILD_NUMBER2 = "${params.xBUILD_NUMBER ?: BUILD_NUMBER1}"
+    BUILD_NUMBER2 = "${params.BUILD_NUMBER ?: BUILD_NUMBER1}"
   }
   
   stages{
