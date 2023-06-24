@@ -39,7 +39,7 @@ pipeline{
 
         stage("Trigger Package helm"){
           steps{
-              build wait: false, job: './package-helm', parameters: [string(name: 'APP_ENV1', value: '${APP_ENV}'), string(name: 'HELM_VERSION1', value: '${HELM_VERSION}')]
+              build wait: false, job: './package-helm', parameters: [string(name: 'APP_ENV1', value: "${APP_ENV}"), string(name: 'HELM_VERSION1', value: "${HELM_VERSION}")]
           }
         }
         
