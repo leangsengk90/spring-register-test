@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.registerApi.name }}-deployment
+  namespace: {{ .Values.registerApi.name }}-{{ .Values.registerApi.env }}
 spec:
   replicas: {{ .Values.registerApi.replicas }}
   selector:
