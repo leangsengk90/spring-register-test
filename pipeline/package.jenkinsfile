@@ -4,11 +4,13 @@ pipeline{
   parameters{
     choice(name: 'APP_ENV1', choices: ["uat", "prod"])
     string(name: 'HELM_VERSION1', defaultValue: "x.x.x")
+    string(name: 'BUILD_NUMBER1', defaultValue: "x")
   }
 
   environment{
     APP_ENV2 = "${params.APP_ENV ?: APP_ENV1}"
     HELM_VERSION2 = "${params.HELM_VERSION ?: HELM_VERSION1}"
+    BUILD_NUMBER2 = "${params.xBUILD_NUMBER ?: BUILD_NUMBER1}"
   }
   
   stages{
@@ -19,7 +21,7 @@ pipeline{
               sh """
                 sed -i 's+name:.*+name: register-app-${APP_ENV2}+g' helm-chart/register-app/Chart.yaml
                 sed -i 's+version:.*+version: ${HELM_VERSION2}+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+tag:.*+tag: ${params.BUILD_NUMBER}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
+                sed -i 's+tag:.*+tag: ${params.BUILD_NUMBER2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
                 sed -i 's+env:.*+env: ${APP_ENV2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
                 helm package helm-chart/register-app -d kubernetes
               """
