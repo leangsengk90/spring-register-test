@@ -21,7 +21,7 @@ pipeline{
               sh """
                 sed -i 's+name:.*+name: register-app-${APP_ENV2}+g' helm-chart/register-app/Chart.yaml
                 sed -i 's+version:.*+version: ${HELM_VERSION2}+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+tag:.*+tag: ${params.BUILD_NUMBER2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
                 sed -i 's+env:.*+env: ${APP_ENV2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
                 helm package helm-chart/register-app -d kubernetes
               """
