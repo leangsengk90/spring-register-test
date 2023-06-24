@@ -1,0 +1,39 @@
+pipeline{
+  agent { label 'master'}
+
+  parameters{
+    choice(name: 'APP_ENV1', choices: ["uat", "prod"])
+    string(name: 'HELM_VERSION1', default: "x.x.x")
+  }
+
+  environments{
+    APP_ENV2 = "${params.APP_ENV} ?: ${APP_ENV1}"
+    HELM_VERSION2 = "${params.HELM_VERSION} ?: ${HELM_VERSION1}"
+  }
+  
+  stages{
+
+        stage("Package Helm Chart"){
+          steps{
+              //git pull origin master
+              sh """
+                sed -i 's+name:.*+name: register-app-${APP_ENV2}+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version: ${HELM_VERSION2}+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+tag:.*+tag: ${params.BUILD_NUMBER}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
+                helm package helm-chart/register-app -d kubernetes
+              """
+          }
+        }
+        
+        stage("Deploy Service"){
+          steps{
+              sh """
+                ansible-playbook ansible/deploy.yml \
+                -i ansible/inventory \
+                -e workspace=$WORKSPACE
+              """
+          }
+        }
+        
+    }
+}
