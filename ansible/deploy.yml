@@ -10,4 +10,4 @@
         dest: /opt
         
     - name: Run Shell Script
-      command: "bash /opt/kubernetes/helm-chart.sh {{ app_env }} {{ helm_version }}"
+      command: "bash /opt/kubernetes/helm-chart.sh"
