@@ -3,11 +3,8 @@
   become: true
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  tasks:
-    - name: Copy file
-      copy:
-        src: "{{ workspace }}/kubernetes"
-        dest: /opt
+  tasks
         
     - name: Run Shell Script
-      command: "bash /opt/kubernetes/helm-chart.sh {{ app_env }} {{ helm_version }}"
+      command: |
+        helm upgrade --install register-app-{{ app_env }} https://nexus-ui.e-crops.co/repository/helm-repo/register-app-{{ app_env }}.tgz --username dara --password 123
