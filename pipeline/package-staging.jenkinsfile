@@ -1,0 +1,48 @@
+pipeline{
+  agent { label 'master'}
+
+  tools {
+    maven "3.6.3"
+  }
+
+  parameters{
+    choice(name: 'APP_ENV1', choices: ["uat", "prod", "staging"])
+    string(name: 'HELM_VERSION1', defaultValue: "x.x.x")
+    choice(name: 'BRANCH', choices: ["staging", "prod", "dev"])
+  }
+
+  environment{
+      APP_ENV2 = "${ params.APP_ENV ?: APP_ENV1 }"
+      HELM_VERSION2 = "${ params.HELM_VERSION ?: HELM_VERSION1 }"
+      BUILD_NUMBER2 = "${ params.BUILD_NUMBER ?: BUILD_NUMBER1 }"
+  }
+
+  stages{
+        
+        stage("Package Helm Chart"){
+          steps{
+              sh """
+                sed -i 's+name:.*+name: register-app-${APP_ENV2}+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version: ${HELM_VERSION2}+g' helm-chart/register-app/Chart.yaml
+
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER2}+g' helm-chart/register-app/values-${APP_ENV2}.yaml
+
+                helm package helm-chart/register-app -d kubernetes
+              """
+          }
+        }
+        
+        stage("Deploy Service"){
+          steps{
+              sh """
+                ansible-playbook ansible/deploy.yml \
+                -i ansible/inventory \
+                -e workspace=$WORKSPACE \
+                -e app_env=${APP_ENV2} \
+                -e helm_version=${HELM_VERSION2}
+              """
+          }
+        }
+      
+  }
+}
