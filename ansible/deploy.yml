@@ -6,7 +6,7 @@
   tasks
         
     - name: Run Shell Script
-      command: |-
+      command: |
         helm repo add register-app-{{ app_env }} https://nexus-ui.e-crops.co/repository/helm-repo/ --username dara --password 123
         helm repo update
         helm upgrade --install register-app-{{ app_env }} register-app-{{ app_env }}/register-app
