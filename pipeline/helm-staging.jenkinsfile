@@ -1,5 +1,6 @@
 pipeline{
   agent { label 'master'}
+
   tools {
     maven "3.6.3"
   }
@@ -10,9 +11,7 @@ pipeline{
   }
 
   stages{
-    stage("Build"){
-      stages{
-        
+    
         stage("Package Project"){
           steps{
             sh "mvn clean package"
@@ -21,7 +20,6 @@ pipeline{
         
         stage("Buid and Tag Image"){
           steps{
-            //sh "docker build -t registry.e-crops.co/register-api:${BUILD_NUMBER} ."
             sh "docker build -t xeng/register-api:${BUILD_NUMBER} ."
           }
         }
@@ -29,14 +27,13 @@ pipeline{
         stage("Push Image"){
           steps{
             withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-              //sh "docker login -u $USERNAME -p $PASSWORD registry.e-crops.co"
-              //sh "docker push registry.e-crops.co/register-api:${BUILD_NUMBER}"
                 sh "docker login -u $USERNAME -p $PASSWORD"
                 sh "docker push xeng/register-api:${BUILD_NUMBER}"
             }
           }
         }
 
+        /*
         stage("Trigger Package helm"){
           steps{
               build wait: false, job: './package-helm', parameters: [string(name: 'APP_ENV1', value: "${APP_ENV}"), 
@@ -44,15 +41,19 @@ pipeline{
                   string(name: 'BUILD_NUMBER', value: "${BUILD_NUMBER}")]
           }
         }
+        */
         
-        /*
+        
         stage("Package Helm Chart"){
           steps{
               sh """
-                git pull origin master
-                sed -i 's+name:.*+name: register-app-prod+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+version:.*+version: 0.0.2+g' helm-chart/register-app/Chart.yaml
-                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-prod.yaml
+                git pull origin staging
+                
+                sed -i 's+name:.*+name: register-app-staging+g' helm-chart/register-app/Chart.yaml
+                sed -i 's+version:.*+version: 0.0.100+g' helm-chart/register-app/Chart.yaml
+
+                sed -i 's+tag:.*+tag: ${BUILD_NUMBER}+g' helm-chart/register-app/values-staging.yaml
+
                 helm package helm-chart/register-app -d kubernetes
               """
           }
@@ -67,17 +68,6 @@ pipeline{
               """
           }
         }
-        */
-        
-      }
-    }
+      
   }
-  /*
-  post{
-        always {
-            sh 'curl -v https://api.telegram.org/bot5999155442:AAF4tpBzAnkl4MVxoc-M1fYPuZXWOacV7pE/sendDocument -F chat_id=456400937 -F document=@testing.md'
-        }
-    }
-  */
-  
 }
