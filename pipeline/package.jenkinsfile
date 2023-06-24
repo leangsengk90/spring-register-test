@@ -3,7 +3,7 @@ pipeline{
 
   parameters{
     choice(name: 'APP_ENV1', choices: ["uat", "prod"])
-    string(name: 'HELM_VERSION1', default: "x.x.x")
+    string(name: 'HELM_VERSION1', defaultValue: "x.x.x")
   }
 
   environments{
