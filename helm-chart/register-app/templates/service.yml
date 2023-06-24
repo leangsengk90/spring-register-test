@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.registerApi.name }}-service
+  namespace: {{ .Values.registerApi.name }}-{{ .Values.registerApi.env }}
 spec:
   selector:
     app: {{ .Values.registerApi.name }}
