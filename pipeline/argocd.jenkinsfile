@@ -1,0 +1,43 @@
+pipeline{
+  agent { label 'master'}
+  tools {
+    maven "3.6.3"
+  }
+
+  stages{
+    stage("Build"){
+      stages{
+        
+        stage("Package Project"){
+          steps{
+            sh "mvn clean package"
+          }
+        }
+        
+        stage("Buid and Tag Image"){
+          steps{
+            sh "docker build -t xeng/register-api:${BUILD_NUMBER} ."
+          }
+        }
+        
+        stage("Push Image"){
+          steps{
+            withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                sh "docker login -u $USERNAME -p $PASSWORD"
+                sh "docker push xeng/register-api:${BUILD_NUMBER}"
+            }
+          }
+        }
+
+        stage("Trigger Argo Manifest"){
+          steps{
+              build wait: false, job: './argocd-pipe', parameters: [string(name: 'BUILD_NUMBER', value: "${BUILD_NUMBER}")]
+          }
+        }
+        
+        
+      }
+    }
+  }
+  
+}
